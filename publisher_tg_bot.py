@@ -2,11 +2,14 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
 import os
 import json
+from dotenv import load_dotenv, find_dotenv
+import telebot
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('sd')
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'polished-logic-307118-3b4591d3ab55.json'
 
 def start(bot, update):
     update.message.reply_text('Hi!')
@@ -40,7 +43,26 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 def main():
     """Start the bot."""
+
+    class TelegramLogsHandler(logging.Handler):
+        tg_bot = telebot.TeleBot(os.environ['TOKEN_LOGGER_BOT'])
+        chat_id = os.environ['CHAT_ID']
+
+        def __init__(self, tg_bot, chat_id):
+            super().__init__()
+            self.chat_id = chat_id
+            self.tg_bot = tg_bot
+
+        def emit(self, record):
+            log_entry = self.format(record)
+            self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+    logger.setLevel(logging.INFO)
+    logger.addHandler(TelegramLogsHandler())
+    logger.info("Бот ТГ запустился")
+
     # Create the EventHandler and pass it your bot's token.
+    load_dotenv(find_dotenv())
     token_tg_publ = os.environ['TOKEN_TG_PUBL']
     updater = Updater(token_tg_publ)
 
