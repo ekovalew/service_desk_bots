@@ -6,10 +6,8 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 import requests
 import time
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'polished-logic-307118-3b4591d3ab55.json'
-
 def echo(event, vk_api):
-    client_credentials = json.load(open("polished-logic-307118-3b4591d3ab55.json"))
+    client_credentials = json.load(open(os.environ['GOOGLE_APPLICATION_CREDENTIALS']))
     project_id = client_credentials['project_id']
     session_id = client_credentials['session_id']
     answer = detect_intent_texts(project_id, session_id, event.text, 'ru')
@@ -38,7 +36,7 @@ def detect_intent_texts(project_id, session_id, text, language_code):
         return response.query_result.fulfillment_text
 
 def main():
-    token = os.dotenv['TOKEN_VK']
+    token = os.environ['TOKEN_VK']
     vk_session = vk.VkApi(token=token)
     vk_api = vk_session.get_api()
     longpoll = VkLongPoll(vk_session)
