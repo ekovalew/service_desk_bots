@@ -9,7 +9,7 @@ import time
 def echo(event, vk_api):
     client_credentials = json.load(open(os.environ['GOOGLE_APPLICATION_CREDENTIALS']))
     project_id = client_credentials['project_id']
-    session_id = client_credentials['session_id']
+    session_id = event.user_id
     answer = detect_intent_texts(project_id, session_id, event.text, 'ru')
     if answer:
         vk_api.messages.send(
