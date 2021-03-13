@@ -5,6 +5,11 @@ import vk_api as vk
 from vk_api.longpoll import VkLongPoll, VkEventType
 import requests
 import time
+import logging
+import telebot
+
+
+logger = logging.getLogger('sd')
 
 def echo(event, vk_api):
     client_credentials = json.load(open(os.environ['GOOGLE_APPLICATION_CREDENTIALS']))
@@ -36,6 +41,23 @@ def detect_intent_texts(project_id, session_id, text, language_code):
         return response.query_result.fulfillment_text
 
 def main():
+    class TelegramLogsHandler(logging.Handler):
+        tg_bot = telebot.TeleBot(os.environ['TOKEN_LOGGER_BOT'])
+        chat_id = os.environ['CHAT_ID']
+
+        def __init__(self, tg_bot, chat_id):
+            super().__init__()
+            self.chat_id = chat_id
+            self.tg_bot = tg_bot
+
+        def emit(self, record):
+            log_entry = self.format(record)
+            self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
+
+    logger.setLevel(logging.INFO)
+    logger.addHandler(TelegramLogsHandler())
+    logger.info("Бот ВК запустился")
+
     token = os.environ['TOKEN_VK']
     vk_session = vk.VkApi(token=token)
     vk_api = vk_session.get_api()
