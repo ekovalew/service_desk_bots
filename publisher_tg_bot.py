@@ -8,7 +8,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'polished-logic-307118-3b4591d3ab55.json'
 
 def start(bot, update):
     update.message.reply_text('Hi!')
@@ -17,7 +16,7 @@ def help(bot, update):
     update.message.reply_text('Help!')
 
 def echo(bot, update):
-    client_credentials = json.load(open(os.getenv('GOOGLE_APPLICATION_CREDENTIALS')))
+    client_credentials = json.load(open(os.environ['GOOGLE_APPLICATION_CREDENTIALS']))
     project_id = client_credentials['project_id']
     session_id = update.message.chat_id
     answer = detect_intent_texts(project_id, session_id, update.message.text, 'ru')
