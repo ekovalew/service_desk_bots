@@ -5,11 +5,8 @@ import json
 from dotenv import load_dotenv, find_dotenv
 import telebot
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-
 logger = logging.getLogger('sd')
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'polished-logic-307118-3b4591d3ab55.json'
+
 
 def start(bot, update):
     update.message.reply_text('Hi!')
@@ -56,6 +53,8 @@ def main():
             log_entry = self.format(record)
             self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
+    logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
     logger.setLevel(logging.INFO)
     logger.addHandler(TelegramLogsHandler(tg_bot, chat_id))
     logger.info("Бот ТГ запустился")
