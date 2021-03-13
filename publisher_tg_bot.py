@@ -2,7 +2,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
 import os
 import json
-from dotenv import load_dotenv, find_dotenv
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -42,8 +41,7 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 def main():
     """Start the bot."""
     # Create the EventHandler and pass it your bot's token.
-    load_dotenv(find_dotenv())
-    token_tg_publ = os.getenv('TOKEN_TG_PUBL')
+    token_tg_publ = os.environ['TOKEN_TG_PUBL']
     updater = Updater(token_tg_publ)
 
     # Get the dispatcher to register handlers
