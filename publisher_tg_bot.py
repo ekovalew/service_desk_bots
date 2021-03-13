@@ -43,10 +43,9 @@ def detect_intent_texts(project_id, session_id, text, language_code):
 
 def main():
     """Start the bot."""
-
+    tg_bot = telebot.TeleBot(os.environ['TOKEN_LOGGER_BOT'])
+    chat_id = os.environ['CHAT_ID']
     class TelegramLogsHandler(logging.Handler):
-        tg_bot = telebot.TeleBot(os.environ['TOKEN_LOGGER_BOT'])
-        chat_id = os.environ['CHAT_ID']
 
         def __init__(self, tg_bot, chat_id):
             super().__init__()
@@ -58,7 +57,7 @@ def main():
             self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
     logger.setLevel(logging.INFO)
-    logger.addHandler(TelegramLogsHandler())
+    logger.addHandler(TelegramLogsHandler(tg_bot, chat_id))
     logger.info("Бот ТГ запустился")
 
     # Create the EventHandler and pass it your bot's token.
